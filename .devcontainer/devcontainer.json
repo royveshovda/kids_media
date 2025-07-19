@@ -37,7 +37,6 @@
   },
 
   "onCreateCommand": "bash .devcontainer/setup.sh",
-  "postStartCommand": "mix deps.get && mix compile",
 
   "remoteUser": "root",
   "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
