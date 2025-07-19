@@ -132,11 +132,11 @@ defmodule KidsMediaWeb.SubjectLive do
               phx-value-index={index}
             />
             <div class="mt-2 text-xs text-gray-300 text-center max-w-[200px]">
-              Photo by 
+              Photo by
               <a href={img.photographer_url} target="_blank" class="text-blue-400 hover:text-blue-300">
-                <%= img.photographer_name %>
+                {img.photographer_name}
               </a>
-              on 
+              on
               <a href="https://unsplash.com" target="_blank" class="text-blue-400 hover:text-blue-300">
                 Unsplash
               </a>
@@ -194,13 +194,17 @@ defmodule KidsMediaWeb.SubjectLive do
             alt="Fullscreen image"
           />
           
-          <!-- Image credits in modal -->
+    <!-- Image credits in modal -->
           <div class="absolute bottom-4 right-4 text-xs text-gray-300 bg-black bg-opacity-70 px-3 py-2 rounded max-w-xs">
-            Photo by 
-            <a href={Enum.at(@images, @current_image_index).photographer_url} target="_blank" class="text-blue-400 hover:text-blue-300">
-              <%= Enum.at(@images, @current_image_index).photographer_name %>
+            Photo by
+            <a
+              href={Enum.at(@images, @current_image_index).photographer_url}
+              target="_blank"
+              class="text-blue-400 hover:text-blue-300"
+            >
+              {Enum.at(@images, @current_image_index).photographer_name}
             </a>
-            on 
+            on
             <a href="https://unsplash.com" target="_blank" class="text-blue-400 hover:text-blue-300">
               Unsplash
             </a>
