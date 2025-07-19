@@ -21,11 +21,11 @@ defmodule KidsMedia.UnsplashTest do
       # Verify that the randomness logic is properly structured
       # This test checks that the module has the expected private functions
       module_functions = Unsplash.__info__(:functions)
-      
+
       # Main public function should exist
       assert Keyword.has_key?(module_functions, :search!)
     end
-    
+
     test "module constants are properly defined for random endpoints" do
       # Test that the module has the necessary constants for randomness
       # We can't directly access module attributes in tests, but we can verify
