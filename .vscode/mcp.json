@@ -1,0 +1,21 @@
+{
+  "servers": {
+    "github": {
+      "type": "http",
+      "url": "https://api.githubcopilot.com/mcp/"
+    },
+    "hexdocs-mcp": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "hexdocs-mcp"
+      ],
+      "env": {
+        "PATH": "/Users/royveshovda/.asdf/shims:/Users/royveshovda/bin:/usr/local/bin:/opt/homebrew/bin:/opt/homebrew/sbin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "ASDF_DIR": "/opt/homebrew/bin",
+        "ASDF_DATA_DIR": "/Users/royveshovda/.asdf",
+        "ASDF_NODEJS_VERSION": "23.10.0"
+      }
+    }
+  }
+}
