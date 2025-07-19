@@ -20,9 +20,8 @@ defmodule KidsMediaWeb.RouterTest do
     end
 
     test "undefined routes return 404", %{conn: conn} do
-      assert_error_sent(404, fn ->
-        get(conn, "/nonexistent")
-      end)
+      conn = get(conn, "/nonexistent")
+      assert conn.status == 404
     end
 
     test "LiveDashboard is available in development", %{conn: conn} do
@@ -31,9 +30,8 @@ defmodule KidsMediaWeb.RouterTest do
         # May redirect to login
         assert conn.status in [200, 302]
       else
-        assert_error_sent(404, fn ->
-          get(conn, "/dev/dashboard")
-        end)
+        conn = get(conn, "/dev/dashboard")
+        assert conn.status == 404
       end
     end
   end

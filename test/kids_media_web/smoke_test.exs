@@ -20,9 +20,8 @@ defmodule KidsMediaWeb.SmokeTest do
         assert conn.status == 200
       else
         # In production, this route shouldn't exist
-        assert_error_sent(404, fn ->
-          get(conn, "/dev/dashboard")
-        end)
+        conn = get(conn, "/dev/dashboard")
+        assert conn.status == 404
       end
     end
 

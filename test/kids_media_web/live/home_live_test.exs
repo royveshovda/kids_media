@@ -20,10 +20,9 @@ defmodule KidsMediaWeb.HomeLiveTest do
       {:ok, view, _html} = live(conn, ~p"/")
 
       # Click the cheetah button
-      html =
-        view
-        |> element("button[phx-click='goto'][value='cheetah']")
-        |> render_click()
+      view
+      |> element("button[phx-click='goto'][value='cheetah']")
+      |> render_click()
 
       # Should navigate to the subject page
       assert_redirected(view, "/subject/cheetah")
@@ -66,10 +65,9 @@ defmodule KidsMediaWeb.HomeLiveTest do
       {:ok, view, _html} = live(conn, ~p"/")
 
       # Simulate the goto event with cheetah value
-      result =
-        view
-        |> element("button[value='cheetah']")
-        |> render_click()
+      view
+      |> element("button[value='cheetah']")
+      |> render_click()
 
       assert_redirected(view, "/subject/cheetah")
     end

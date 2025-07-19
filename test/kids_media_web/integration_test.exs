@@ -55,9 +55,8 @@ defmodule KidsMediaWeb.IntegrationTest do
 
   describe "Error handling" do
     test "invalid routes return 404", %{conn: conn} do
-      assert_error_sent(404, fn ->
-        get(conn, "/nonexistent")
-      end)
+      conn = get(conn, "/nonexistent")
+      assert conn.status == 404
     end
 
     test "subject page with empty topic parameter", %{conn: conn} do

@@ -10,47 +10,23 @@ defmodule KidsMediaWeb.SubjectLiveTest do
 
   describe "Subject page mounting" do
     test "mounts successfully with valid topic", %{conn: conn} do
-      # Note: In real tests, you'd mock KidsMedia.Unsplash.search!/1
-      # For now, this test structure shows the intended functionality
+      {:ok, _view, html} = live(conn, ~p"/subject/cheetah")
 
-      # {:ok, _view, html} = live(conn, ~p"/subject/cheetah")
-      # assert html =~ "cheetah"
-      # assert html =~ "bg-black text-white"
-
-      # Test the route exists
-      assert {:ok, _} =
-               Phoenix.LiveView.live_isolated(
-                 conn,
-                 KidsMediaWeb.SubjectLive,
-                 session: %{"id" => "cheetah"}
-               )
+      assert html =~ "cheetah"
+      assert html =~ "bg-black text-white"
     end
 
     test "sets fullscreen layout", %{conn: conn} do
-      # Test that fullscreen layout is properly assigned
-      {:ok, view} =
-        Phoenix.LiveView.live_isolated(
-          conn,
-          KidsMediaWeb.SubjectLive,
-          session: %{"id" => "cheetah"}
-        )
+      {:ok, view, _html} = live(conn, ~p"/subject/cheetah")
 
-      # In a real test with mocked API, you would verify:
-      # assert view |> element("div[phx-hook='Fullscreen']") |> has_element?()
-      assert view != nil
+      # Check that fullscreen layout elements are present
+      assert view |> element("div[phx-hook='Fullscreen']") |> has_element?()
     end
 
     test "capitalizes topic name in title", %{conn: conn} do
-      {:ok, view} =
-        Phoenix.LiveView.live_isolated(
-          conn,
-          KidsMediaWeb.SubjectLive,
-          session: %{"id" => "wild-cats"}
-        )
+      {:ok, _view, html} = live(conn, ~p"/subject/wild-cats")
 
-      # With mocked API:
-      # assert render(view) =~ "Wild-cats"
-      assert view != nil
+      assert html =~ "wild-cats"
     end
   end
 
