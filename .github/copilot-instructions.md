@@ -32,12 +32,18 @@ end
 **Start**: `source .env && mix phx.server` or `source .env && iex -S mix phx.server` for console access
 **Assets**: Tailwind + esbuild configured, auto-rebuild in dev
 
+### Environment Variable Considerations
+- **Local Development**: If `UNSPLASH_ACCESS_KEY` is not set in your shell environment, prefix mix commands with `source .env &&` 
+- **GitHub Codespaces**: Environment variables are typically pre-configured, so `source .env &&` is usually not needed
+- **Coding Agent/CI**: Environment variables are set via secrets, so `source .env &&` is not needed
+- **When in doubt**: Try the command without the prefix first; if you get an "environment variable UNSPLASH_ACCESS_KEY is missing" error, then use `source .env &&`
+
 ## PR Validation & CI Checks
 
 **IMPORTANT**: Before completing any changes, ALWAYS verify that all PR checks pass locally to ensure code quality and prevent CI failures.
 
 ### Required Validation Steps
-Run these commands in order to validate changes match PR requirements:
+Run these commands in order to validate changes match PR requirements (prefix with `source .env &&` if needed):
 
 1. **Compilation**: `mix compile --warnings-as-errors`
 2. **Code Formatting**: `mix format --check-formatted` (or `mix format` to auto-fix)
