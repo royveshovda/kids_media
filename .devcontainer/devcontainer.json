@@ -1,0 +1,51 @@
+{
+  "name": "KidsMedia Elixir Phoenix",
+  "image": "hexpm/elixir:1.18.4-erlang-28.0.2-debian-bookworm-20250630",
+  
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {},
+    "ghcr.io/devcontainers/features/github-cli:1": {},
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "jakebecker.elixir-ls",
+        "phoenixframework.phoenix",
+        "bradlc.vscode-tailwindcss",
+        "esbenp.prettier-vscode",
+        "ms-vscode.vscode-json"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "elixirLS.dialyzerEnabled": false,
+        "elixirLS.fetchDeps": false,
+        "elixirLS.suggestSpecs": false
+      }
+    }
+  },
+
+  "forwardPorts": [4000],
+  "portsAttributes": {
+    "4000": {
+      "label": "Phoenix Server",
+      "onAutoForward": "notify"
+    }
+  },
+
+  "onCreateCommand": "bash .devcontainer/setup.sh",
+  "postStartCommand": "mix deps.get && mix compile",
+
+  "remoteUser": "root",
+  "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+
+  "mounts": [
+    "source=${localWorkspaceFolderBasename}-mix-cache,target=/root/.mix,type=volume",
+    "source=${localWorkspaceFolderBasename}-hex-cache,target=/root/.hex,type=volume",
+    "source=${localWorkspaceFolderBasename}-deps-cache,target=${containerWorkspaceFolder}/deps,type=volume",
+    "source=${localWorkspaceFolderBasename}-build-cache,target=${containerWorkspaceFolder}/_build,type=volume"
+  ]
+}
