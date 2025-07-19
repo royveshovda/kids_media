@@ -3,7 +3,8 @@ defmodule KidsMediaWeb.SubjectLive do
 
   @impl true
   def mount(%{"id" => topic} = params, _session, socket) do
-    images = KidsMedia.Unsplash.search!("#{topic} animal")
+    unsplash_module = Application.get_env(:kids_media, :unsplash_module, KidsMedia.Unsplash)
+    images = unsplash_module.search!("#{topic} animal")
     tv_mode = Map.get(params, "tv") == "1"
     layout = if tv_mode, do: {KidsMediaWeb.Layouts, :tv}, else: {KidsMediaWeb.Layouts, :fullscreen}
     
