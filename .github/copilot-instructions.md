@@ -13,7 +13,7 @@ KidsMedia is a Phoenix LiveView application that provides an immersive, kid-frie
 
 ### Key Patterns
 
-**Fullscreen Layout System**: Subject pages use a custom fullscreen layout (`{KidsMediaWeb.Layouts, :fullscreen}`) set via `assign(:root_layout, ...)` in mount/3. This bypasses the default app header/footer for immersive viewing.
+**Fullscreen Layout System**: Both home and subject pages use a custom fullscreen layout (`{KidsMediaWeb.Layouts, :fullscreen}`) set via `assign(:root_layout, ...)` in mount/3. This bypasses the default app header/footer for immersive viewing.
 
 **External API Integration**: The `KidsMedia.Unsplash` module follows a simple pattern:
 ```elixir
