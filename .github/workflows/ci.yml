@@ -59,6 +59,8 @@ jobs:
 
     - name: Run tests
       run: mix test --cover
+      env:
+        UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
 
     - name: Run Credo (static code analysis)
       run: mix credo --strict
