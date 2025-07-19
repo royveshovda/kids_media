@@ -55,7 +55,14 @@ defmodule KidsMedia.Unsplash do
       body
       |> Jason.decode!()
       |> Map.fetch!("results")
-      |> Enum.map(& &1["urls"]["regular"])
+      |> Enum.map(fn photo ->
+        %{
+          url: photo["urls"]["regular"],
+          photographer_name: photo["user"]["name"],
+          photographer_url: photo["user"]["links"]["html"],
+          photo_url: photo["links"]["html"]
+        }
+      end)
 
     # Shuffle results for additional randomness
     Enum.shuffle(results)
@@ -78,10 +85,19 @@ defmodule KidsMedia.Unsplash do
     case HTTPoison.get(url, [], follow_redirect: true) do
       {:ok, %{status_code: 200, body: body}} ->
         # Random endpoint returns array directly, not wrapped in "results"
-        body
-        |> Jason.decode!()
-        |> Enum.map(& &1["urls"]["regular"])
-        |> Enum.shuffle()
+        results = 
+          body
+          |> Jason.decode!()
+          |> Enum.map(fn photo ->
+            %{
+              url: photo["urls"]["regular"],
+              photographer_name: photo["user"]["name"],
+              photographer_url: photo["user"]["links"]["html"],
+              photo_url: photo["links"]["html"]
+            }
+          end)
+        
+        Enum.shuffle(results)
       
       # Fallback to search if random endpoint fails
       _ ->
