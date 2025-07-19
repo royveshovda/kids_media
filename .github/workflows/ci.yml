@@ -1,0 +1,164 @@
+name: CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Test
+    strategy:
+      matrix:
+        elixir: ['1.18.4']
+        otp: ['28.0.2']
+
+    steps:
+    - name: Set up Git repository
+      uses: actions/checkout@v4
+
+    - name: Set up Elixir
+      uses: erlef/setup-beam@v1
+      with:
+        elixir-version: ${{ matrix.elixir }}
+        otp-version: ${{ matrix.otp }}
+
+    - name: Restore dependencies cache
+      uses: actions/cache@v3
+      with:
+        path: deps
+        key: ${{ runner.os }}-mix-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles('**/mix.lock') }}
+        restore-keys: ${{ runner.os }}-mix-${{ matrix.elixir }}-${{ matrix.otp }}-
+
+    - name: Restore compiled code cache
+      uses: actions/cache@v3
+      with:
+        path: _build
+        key: ${{ runner.os }}-build-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles('**/mix.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-build-${{ matrix.elixir }}-${{ matrix.otp }}-
+          ${{ runner.os }}-build-${{ matrix.elixir }}-
+          ${{ runner.os }}-build-
+
+    - name: Install dependencies
+      run: mix deps.get
+
+    - name: Check Formatting
+      run: mix format --check-formatted
+
+    - name: Compile dependencies
+      run: mix deps.compile
+
+    - name: Compile project
+      run: mix compile --warnings-as-errors
+
+    - name: Run tests
+      run: mix test --cover
+      env:
+        UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
+
+    - name: Run Credo (static code analysis)
+      run: mix credo --strict
+
+    - name: Run Sobelow (security analysis)
+      run: mix sobelow --config
+
+    - name: Generate test coverage report
+      run: mix coveralls.html
+
+    - name: Archive test coverage results
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-report
+        path: cover/
+
+  assets:
+    runs-on: ubuntu-latest
+    name: Assets and Frontend
+    steps:
+    - name: Set up Git repository
+      uses: actions/checkout@v4
+
+    - name: Set up Elixir
+      uses: erlef/setup-beam@v1
+      with:
+        elixir-version: '1.18.4'
+        otp-version: '28.0.2'
+
+    - name: Set up Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '20'
+
+    - name: Install dependencies
+      run: mix deps.get
+
+    - name: Setup assets
+      run: mix assets.setup
+
+    - name: Build assets
+      run: mix assets.build
+
+    - name: Check assets are up to date
+      run: |
+        mix assets.build
+        if ! git diff --exit-code; then
+          echo "Assets are not up to date. Please run 'mix assets.build' and commit the changes."
+          exit 1
+        fi
+
+  quality:
+    runs-on: ubuntu-latest
+    name: Code Quality and Security
+    steps:
+    - name: Set up Git repository
+      uses: actions/checkout@v4
+
+    - name: Set up Elixir
+      uses: erlef/setup-beam@v1
+      with:
+        elixir-version: '1.18.4'
+        otp-version: '28.0.2'
+
+    - name: Restore dependencies cache
+      uses: actions/cache@v3
+      with:
+        path: deps
+        key: ${{ runner.os }}-mix-quality-${{ hashFiles('**/mix.lock') }}
+        restore-keys: ${{ runner.os }}-mix-quality-
+
+    - name: Restore PLT cache
+      uses: actions/cache@v3
+      with:
+        path: priv/plts
+        key: ${{ runner.os }}-plt-${{ hashFiles('**/mix.lock') }}
+        restore-keys: ${{ runner.os }}-plt-
+
+    - name: Install dependencies
+      run: mix deps.get
+
+    - name: Compile dependencies (dev + test)
+      run: |
+        MIX_ENV=dev mix deps.compile
+        MIX_ENV=test mix deps.compile
+
+    - name: Create PLTs directory
+      run: mkdir -p priv/plts
+
+    - name: Run Dialyzer (static analysis)
+      run: mix dialyzer
+      continue-on-error: true  # Dialyzer can be slow to set up initially
+
+    - name: Run detailed security scan
+      run: |
+        mix sobelow --verbose --exit
+      continue-on-error: true  # Allow security warnings without failing CI
+
+    - name: Run Styler (code style)
+      run: mix style --check
+      continue-on-error: true  # Style issues shouldn't fail CI but should be reported

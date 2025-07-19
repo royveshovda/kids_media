@@ -13,6 +13,12 @@ config :kids_media, KidsMedia.Mailer, adapter: Swoosh.Adapters.Test
 # Disable swoosh api client as it is only required for production adapters
 config :swoosh, :api_client, false
 
+# Configure test API key for Unsplash (can be fake for testing)
+config :kids_media, KidsMedia.Unsplash, access_key: "test_key"
+
+# Use mock for Unsplash in tests to avoid real API calls
+config :kids_media, :unsplash_module, KidsMedia.UnsplashMock
+
 # Print only warnings and errors during test
 config :logger, level: :warning
 
