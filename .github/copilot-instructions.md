@@ -32,6 +32,36 @@ end
 **Start**: `source .env && mix phx.server` or `source .env && iex -S mix phx.server` for console access
 **Assets**: Tailwind + esbuild configured, auto-rebuild in dev
 
+## PR Validation & CI Checks
+
+**IMPORTANT**: Before completing any changes, ALWAYS verify that all PR checks pass locally to ensure code quality and prevent CI failures.
+
+### Required Validation Steps
+Run these commands in order to validate changes match PR requirements:
+
+1. **Compilation**: `mix compile --warnings-as-errors`
+2. **Code Formatting**: `mix format --check-formatted` (or `mix format` to auto-fix)
+3. **Tests**: `mix test --color`
+4. **Static Analysis**: `mix credo --strict`
+5. **Security Check**: `mix sobelow --skip`
+6. **Assets Build**: `mix assets.setup && mix assets.build`
+
+### Quick Validation Command
+Use the CI alias for comprehensive checks: `mix ci`
+
+### PR Workflow Compliance
+- All compilation must complete without warnings
+- Code must be properly formatted (use `mix format` if needed)
+- All tests must pass
+- Credo and Sobelow checks should complete (warnings acceptable but not errors)
+- Assets must build successfully
+
+### Best Practices
+- Run `mix test --cover` for test coverage validation (minimum 80% required)
+- Check `mix coveralls.html` for detailed coverage reports
+- Use `mix test.watch` during development for continuous testing
+- Validate assets with `mix assets.build --minify` for production readiness
+
 ## Configuration Specifics
 
 **Content Security Policy**: Custom CSP in `endpoint.ex` allows Unsplash images and YouTube embeds:
