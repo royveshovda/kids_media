@@ -3,7 +3,8 @@ defmodule KidsMediaWeb.SubjectLive do
 
   @impl true
   def mount(%{"id" => topic}, _session, socket) do
-    images = KidsMedia.Unsplash.search!("#{topic} animal")
+    unsplash_module = Application.get_env(:kids_media, :unsplash_module, KidsMedia.Unsplash)
+    images = unsplash_module.search!("#{topic} animal")
     # video_id = KidsMedia.YouTube.first_video_id!("#{topic} for kids")
     {:ok,
      socket
