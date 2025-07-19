@@ -14,7 +14,7 @@ defmodule KidsMedia.Unsplash do
 
   @search_endpoint "https://api.unsplash.com/search/photos"
   @random_endpoint "https://api.unsplash.com/photos/random"
-  @per_page 10
+  @per_page 30
 
   # Random descriptive terms to add variety to searches
   @descriptive_terms [
