@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" class="[scrollbar-gutter:stable]">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no" />
+    <meta name="csrf-token" content={get_csrf_token()} />
+    
+    <!-- Apple TV specific meta tags -->
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="format-detection" content="telephone=no" />
+    
+    <.live_title default="KidsMedia TV">
+      {assigns[:page_title]}
+    </.live_title>
+    <link phx-track-static rel="stylesheet" href={~p"/assets/app.css"} />
+    <script defer phx-track-static type="text/javascript" src={~p"/assets/app.js"}>
+    </script>
+    
+    <style>
+      /* TV-specific styles */
+      body {
+        font-size: 1.5rem;
+        line-height: 1.4;
+        -webkit-user-select: none;
+        user-select: none;
+        cursor: none;
+      }
+      
+      /* Larger focus indicators for TV */
+      .tv-focusable {
+        transition: all 0.2s ease;
+        border: 3px solid transparent;
+      }
+      
+      .tv-focusable:focus,
+      .tv-focusable.tv-focused {
+        outline: none;
+        border: 3px solid #22d3ee;
+        transform: scale(1.05);
+        box-shadow: 0 0 20px rgba(34, 211, 238, 0.5);
+      }
+      
+      /* TV-optimized button styles */
+      .tv-button {
+        font-size: 2.5rem;
+        padding: 2rem 4rem;
+        border-radius: 1rem;
+        font-weight: bold;
+        min-height: 120px;
+        min-width: 300px;
+      }
+      
+      /* TV-optimized image styles */
+      .tv-image {
+        border-radius: 0.75rem;
+        border: 2px solid transparent;
+        transition: all 0.2s ease;
+      }
+      
+      .tv-image:focus,
+      .tv-image.tv-focused {
+        border: 3px solid #22d3ee;
+        transform: scale(1.02);
+        box-shadow: 0 0 15px rgba(34, 211, 238, 0.5);
+      }
+      
+      /* Hide scrollbars for TV */
+      ::-webkit-scrollbar {
+        display: none;
+      }
+      
+      /* TV-optimized modal controls */
+      .tv-modal-control {
+        font-size: 2rem;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        border: 2px solid transparent;
+        transition: all 0.2s ease;
+      }
+      
+      .tv-modal-control:focus,
+      .tv-modal-control.tv-focused {
+        border: 3px solid #22d3ee;
+        transform: scale(1.1);
+        box-shadow: 0 0 15px rgba(34, 211, 238, 0.5);
+      }
+    </style>
+  </head>
+  <body class="bg-black m-0 p-0 overflow-hidden text-white">
+    {@inner_content}
+  </body>
+</html>

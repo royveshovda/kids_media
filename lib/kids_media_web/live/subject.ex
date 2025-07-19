@@ -2,18 +2,22 @@ defmodule KidsMediaWeb.SubjectLive do
   use KidsMediaWeb, :live_view
 
   @impl true
-  def mount(%{"id" => topic}, _session, socket) do
+  def mount(%{"id" => topic} = params, _session, socket) do
     images = KidsMedia.Unsplash.search!("#{topic} animal")
+    tv_mode = Map.get(params, "tv") == "1"
+    layout = if tv_mode, do: {KidsMediaWeb.Layouts, :tv}, else: {KidsMediaWeb.Layouts, :fullscreen}
+    
     # video_id = KidsMedia.YouTube.first_video_id!("#{topic} for kids")
     {:ok,
      socket
-     |> assign(topic: topic, images: images, page_title: topic)
-     |> assign(:root_layout, {KidsMediaWeb.Layouts, :fullscreen})
+     |> assign(topic: topic, images: images, page_title: topic, tv_mode: tv_mode)
+     |> assign(:root_layout, layout)
      |> assign(
        show_modal: false,
        current_image_index: 0,
        carousel_active: false,
-       carousel_interval: 3
+       carousel_interval: 3,
+       focused_element: "carousel-btn"
      )}
   end
 
@@ -77,164 +81,284 @@ defmodule KidsMediaWeb.SubjectLive do
     end
   end
 
+  def handle_event("tv_navigate", %{"direction" => direction}, socket) do
+    if socket.assigns.tv_mode and socket.assigns.show_modal do
+      case direction do
+        "left" -> handle_event("prev_image", %{}, socket)
+        "right" -> handle_event("next_image", %{}, socket)
+        "up" -> {:noreply, socket}
+        "down" -> {:noreply, socket}
+        "select" -> {:noreply, socket}
+        "menu" -> handle_event("close_modal", %{}, socket)
+        _ -> {:noreply, socket}
+      end
+    else
+      {:noreply, socket}
+    end
+  end
+
+  def handle_event("tv_focus", %{"element" => element}, socket) do
+    {:noreply, assign(socket, focused_element: element)}
+  end
+
   @impl true
   def render(assigns) do
     ~H"""
     <div
       id="root"
-      phx-hook="Fullscreen"
+      phx-hook={if @tv_mode, do: "TVNavigation", else: "Fullscreen"}
       class="w-full h-full min-h-screen overflow-auto bg-black text-white flex flex-col items-center"
     >
-      <h1 class="text-4xl font-extrabold mt-4 mb-2 capitalize">{@topic}</h1>
+      <!-- Back button for TV mode -->
+      <%= if @tv_mode do %>
+        <div class="w-full flex justify-start p-4">
+          <.link 
+            navigate="/?tv=1"
+            class="tv-focusable tv-modal-control bg-red-600 hover:bg-red-700 text-white flex items-center justify-center"
+            tabindex="0"
+          >
+            ←
+          </.link>
+        </div>
+      <% end %>
       
-    <!-- Carousel controls -->
+      <h1 class={[
+        "font-extrabold mt-4 mb-2 capitalize",
+        if(@tv_mode, do: "text-6xl", else: "text-4xl")
+      ]}>{@topic}</h1>
+      
+      <!-- Carousel controls -->
       <div class="mb-4 flex flex-col items-center gap-4">
         <button
+          id="carousel-btn"
           phx-click="start_carousel"
           type="button"
           disabled={length(@images) < 2}
           class={[
-            "font-bold py-3 px-6 rounded-lg text-lg",
+            "tv-focusable font-bold py-3 px-6 rounded-lg transition-all duration-200",
+            if(@tv_mode, do: "text-2xl py-4 px-8", else: "text-lg"),
             if(length(@images) >= 2,
               do: "bg-green-500 hover:bg-green-600 text-white",
               else: "bg-gray-500 text-gray-300 cursor-not-allowed"
             )
           ]}
+          tabindex="0"
         >
           🎠 Start Carousel
         </button>
 
         <form phx-change="update_carousel_interval" class="flex items-center gap-4">
-          <label class="text-sm">Slide interval:</label>
+          <label class={if(@tv_mode, do: "text-lg", else: "text-sm")}>Slide interval:</label>
           <input
             type="range"
             name="value"
             min="1"
             max="7"
             value={@carousel_interval}
-            class="w-32"
+            class={if(@tv_mode, do: "w-48", else: "w-32")}
             disabled={length(@images) < 2}
           />
-          <span class="text-sm">{@carousel_interval}s</span>
+          <span class={if(@tv_mode, do: "text-lg", else: "text-sm")}>{@carousel_interval}s</span>
         </form>
       </div>
       
-    <!-- Images -->
-      <div class="flex flex-wrap justify-center gap-4 px-4 pb-4">
+      <!-- Images -->
+      <div class={[
+        "flex flex-wrap justify-center gap-4 px-4 pb-4",
+        if(@tv_mode, do: "gap-6", else: "gap-4")
+      ]}>
         <%= for {img, index} <- Enum.with_index(@images) do %>
           <img
+            id={"image-#{index}"}
             src={img}
-            class="h-52 rounded-lg shadow-md cursor-pointer hover:opacity-80 transition-opacity"
+            class={[
+              "rounded-lg shadow-md cursor-pointer hover:opacity-80 transition-all duration-200",
+              if(@tv_mode, 
+                do: "tv-focusable tv-image h-64 w-64 object-cover", 
+                else: "h-52"
+              )
+            ]}
             loading="lazy"
             phx-click="open_modal"
             phx-value-index={index}
+            tabindex={if @tv_mode, do: "0", else: "-1"}
           />
         <% end %>
       </div>
       
-    <!-- Modal for fullscreen image viewing -->
+      <!-- TV Navigation Help -->
+      <%= if @tv_mode and not @show_modal do %>
+        <div class="text-center text-gray-400 text-lg mt-4 mb-8">
+          Use your Apple TV remote • Up/Down: Navigate • Enter: View image • Menu: Back
+        </div>
+      <% end %>
+      
+      <!-- Modal for fullscreen image viewing -->
       <%= if @show_modal do %>
         <div
           id="image-modal"
-          phx-hook="ImageModal"
+          phx-hook={if @tv_mode, do: "TVImageModal", else: "ImageModal"}
           class="fixed top-0 left-0 w-screen h-screen flex items-center justify-center"
           style="background-color: rgba(0, 0, 0, 0.95); z-index: 999999;"
-          phx-click="close_modal"
+          phx-click={if not @tv_mode, do: "close_modal"}
           data-carousel-active={to_string(@carousel_active)}
           data-carousel-interval={@carousel_interval * 1000}
         >
           <!-- Close button -->
           <button
+            id="close-btn"
             phx-click="close_modal"
             type="button"
-            class="absolute top-4 right-4 text-white text-3xl hover:text-red-300 bg-red-600 bg-opacity-80 rounded-full w-14 h-14 flex items-center justify-center"
+            class={[
+              "absolute top-4 right-4 text-white hover:text-red-300 bg-red-600 bg-opacity-80 rounded-full flex items-center justify-center",
+              if(@tv_mode, 
+                do: "tv-focusable tv-modal-control text-4xl w-20 h-20", 
+                else: "text-3xl w-14 h-14"
+              )
+            ]}
+            tabindex="0"
           >
             ✕
           </button>
           
-    <!-- Previous button -->
+          <!-- Previous button -->
           <%= if length(@images) > 1 do %>
             <button
+              id="prev-btn"
               phx-click="prev_image"
               type="button"
-              class="absolute left-4 top-1/2 transform -translate-y-1/2 text-white text-3xl hover:text-gray-300 bg-gray-800 bg-opacity-70 rounded-full w-14 h-14 flex items-center justify-center z-10"
+              class={[
+                "absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 bg-gray-800 bg-opacity-70 rounded-full flex items-center justify-center z-10",
+                if(@tv_mode, 
+                  do: "tv-focusable tv-modal-control text-4xl w-20 h-20", 
+                  else: "text-3xl w-14 h-14"
+                )
+              ]}
+              tabindex="0"
             >
               ⬅️
             </button>
           <% end %>
           
-    <!-- Next button -->
+          <!-- Next button -->
           <%= if length(@images) > 1 do %>
             <button
+              id="next-btn"
               phx-click="next_image"
               type="button"
-              class="absolute right-4 top-1/2 transform -translate-y-1/2 text-white text-3xl hover:text-gray-300 bg-gray-800 bg-opacity-70 rounded-full w-14 h-14 flex items-center justify-center z-10"
+              class={[
+                "absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 bg-gray-800 bg-opacity-70 rounded-full flex items-center justify-center z-10",
+                if(@tv_mode, 
+                  do: "tv-focusable tv-modal-control text-4xl w-20 h-20", 
+                  else: "text-3xl w-14 h-14"
+                )
+              ]}
+              tabindex="0"
             >
               ➡️
             </button>
           <% end %>
           
-    <!-- Current image -->
+          <!-- Current image -->
           <img
             src={Enum.at(@images, @current_image_index)}
             class="max-w-[90vw] max-h-[90vh] object-contain pointer-events-none"
             alt="Fullscreen image"
           />
           
-    <!-- Carousel controls -->
+          <!-- Carousel controls -->
           <%= if length(@images) > 1 do %>
             <div
-              class="absolute bottom-6 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-4 z-10"
+              class={[
+                "absolute bottom-6 left-1/2 transform -translate-x-1/2 flex flex-col items-center gap-4 z-10",
+                if(@tv_mode, do: "gap-6", else: "gap-4")
+              ]}
               phx-click="stop_modal_close"
             >
               <!-- Play/Pause button -->
               <div class="flex gap-4">
                 <%= if @carousel_active do %>
                   <button
+                    id="pause-btn"
                     phx-click="stop_carousel"
                     phx-capture-click="stop_modal_close"
                     type="button"
-                    class="bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-6 rounded-lg text-lg"
+                    class={[
+                      "bg-red-500 hover:bg-red-600 text-white font-bold rounded-lg",
+                      if(@tv_mode, 
+                        do: "tv-focusable text-2xl py-4 px-8", 
+                        else: "text-lg py-3 px-6"
+                      )
+                    ]}
+                    tabindex="0"
                   >
                     ⏸️ Pause
                   </button>
                 <% else %>
                   <button
+                    id="play-btn"
                     phx-click="start_carousel"
                     phx-capture-click="stop_modal_close"
                     type="button"
-                    class="bg-green-500 hover:bg-green-600 text-white font-bold py-3 px-6 rounded-lg text-lg"
+                    class={[
+                      "bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg",
+                      if(@tv_mode, 
+                        do: "tv-focusable text-2xl py-4 px-8", 
+                        else: "text-lg py-3 px-6"
+                      )
+                    ]}
+                    tabindex="0"
                   >
                     ▶️ Play
                   </button>
                 <% end %>
               </div>
               
-    <!-- Interval slider -->
+              <!-- Interval slider -->
               <form
                 phx-change="update_carousel_interval"
-                class="flex items-center gap-4 bg-black bg-opacity-50 px-4 py-2 rounded"
+                class={[
+                  "flex items-center gap-4 bg-black bg-opacity-50 px-4 py-2 rounded",
+                  if(@tv_mode, do: "px-6 py-3", else: "px-4 py-2")
+                ]}
                 onmousedown="event.stopPropagation()"
                 onmouseup="event.stopPropagation()"
               >
-                <label class="text-white text-sm">Slide interval:</label>
+                <label class={[
+                  "text-white",
+                  if(@tv_mode, do: "text-lg", else: "text-sm")
+                ]}>Slide interval:</label>
                 <input
                   type="range"
                   name="value"
                   min="1"
                   max="7"
                   value={@carousel_interval}
-                  class="w-32"
+                  class={if(@tv_mode, do: "w-48", else: "w-32")}
                 />
-                <span class="text-white text-sm">{@carousel_interval}s</span>
+                <span class={[
+                  "text-white",
+                  if(@tv_mode, do: "text-lg", else: "text-sm")
+                ]}>{@carousel_interval}s</span>
               </form>
             </div>
           <% end %>
           
-    <!-- Image counter -->
-          <div class="absolute top-4 left-1/2 transform -translate-x-1/2 text-white bg-black bg-opacity-50 px-4 py-2 rounded z-10">
+          <!-- Image counter -->
+          <div class={[
+            "absolute top-4 left-1/2 transform -translate-x-1/2 text-white bg-black bg-opacity-50 px-4 py-2 rounded z-10",
+            if(@tv_mode, do: "text-xl px-6 py-3", else: "text-base px-4 py-2")
+          ]}>
             {@current_image_index + 1} / {length(@images)}
           </div>
+          
+          <!-- TV Navigation Help -->
+          <%= if @tv_mode do %>
+            <div class="absolute bottom-4 right-4 text-center text-gray-300 text-sm bg-black bg-opacity-50 px-4 py-2 rounded">
+              Left/Right: Navigate images<br/>
+              Menu: Close
+            </div>
+          <% end %>
         </div>
       <% end %>
     </div>
