@@ -41,3 +41,17 @@ npm-debug.log
 # Temporary build files
 elixir.zip
 
+
+# Elixir installation artifacts
+bin/
+lib/elixir/
+lib/eex/
+lib/ex_unit/
+lib/iex/
+lib/logger/
+lib/mix/
+man/
+CHANGELOG.md
+LICENSE
+Makefile
+NOTICE
