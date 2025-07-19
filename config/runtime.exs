@@ -21,15 +21,17 @@ if System.get_env("PHX_SERVER") do
 end
 
 # Configure Unsplash API key from environment variable
-# This works for all environments (dev, test, prod)
-unsplash_access_key =
-  System.get_env("UNSPLASH_ACCESS_KEY") ||
-    raise """
-    environment variable UNSPLASH_ACCESS_KEY is missing.
-    You can get an API key from https://unsplash.com/developers
-    """
+# This works for dev and prod environments, test environment uses test.exs config
+if config_env() != :test do
+  unsplash_access_key =
+    System.get_env("UNSPLASH_ACCESS_KEY") ||
+      raise """
+      environment variable UNSPLASH_ACCESS_KEY is missing.
+      You can get an API key from https://unsplash.com/developers
+      """
 
-config :kids_media, KidsMedia.Unsplash, access_key: unsplash_access_key
+  config :kids_media, KidsMedia.Unsplash, access_key: unsplash_access_key
+end
 
 if config_env() == :prod do
   # The secret key base is used to sign/encrypt cookies and other secrets.

@@ -9,7 +9,15 @@ defmodule KidsMedia.MixProject do
       elixirc_paths: elixirc_paths(Mix.env()),
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
-      deps: deps()
+      deps: deps(),
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test,
+        "coveralls.cobertura": :test
+      ]
     ]
   end
 
@@ -81,6 +89,15 @@ defmodule KidsMedia.MixProject do
         "tailwind kids_media --minify",
         "esbuild kids_media --minify",
         "phx.digest"
+      ],
+      test: ["test"],
+      "test.watch": ["test --stale --listen-on-stdin"],
+      ci: [
+        "format --check-formatted",
+        "deps.unlock --check-unused",
+        "compile --warnings-as-errors",
+        "test",
+        "credo --strict"
       ]
     ]
   end

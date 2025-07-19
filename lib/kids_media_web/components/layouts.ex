@@ -10,5 +10,5 @@ defmodule KidsMediaWeb.Layouts do
   """
   use KidsMediaWeb, :html
 
-  embed_templates "layouts/*"
+  embed_templates("layouts/*")
 end

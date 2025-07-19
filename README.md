@@ -27,6 +27,23 @@ The fastest way to get started:
 * Run `mix setup` to install and setup dependencies
 * Start Phoenix endpoint with `mix phx.server` or inside IEx with `iex -S mix phx.server`
 
+## Testing
+
+This project includes a comprehensive test suite:
+
+```bash
+# Run all tests
+mix test
+
+# Run tests with coverage
+mix test --cover
+
+# Run CI checks locally
+mix ci
+```
+
+See [TESTING.md](TESTING.md) for detailed testing documentation.
+
 ## Environment Variables
 
 This application requires the following environment variables:

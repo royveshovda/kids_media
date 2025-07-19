@@ -1,4 +1,17 @@
 defmodule KidsMedia.Unsplash do
+  @moduledoc """
+  Unsplash API client for fetching animal images.
+
+  This module provides functionality to search for images using the Unsplash API.
+  It's designed to fetch kid-friendly animal images for the KidsMedia application.
+  
+  Features randomness in image results through multiple strategies:
+  - Mixed search/random endpoint usage (70%/30% split)
+  - Random ordering parameters (relevant vs latest)
+  - Query enhancement with descriptive terms
+  - Result shuffling for additional variety
+  """
+
   @search_endpoint "https://api.unsplash.com/search/photos"
   @random_endpoint "https://api.unsplash.com/photos/random"
   @per_page 10
