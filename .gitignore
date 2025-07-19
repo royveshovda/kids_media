@@ -38,3 +38,20 @@ npm-debug.log
 # Environment variables with secrets
 .env
 
+# Temporary build files
+elixir.zip
+
+
+# Elixir installation artifacts
+bin/
+lib/elixir/
+lib/eex/
+lib/ex_unit/
+lib/iex/
+lib/logger/
+lib/mix/
+man/
+CHANGELOG.md
+LICENSE
+Makefile
+NOTICE
