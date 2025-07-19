@@ -38,3 +38,6 @@ npm-debug.log
 # Environment variables with secrets
 .env
 
+# Temporary build files
+elixir.zip
+
