@@ -92,7 +92,13 @@ defmodule KidsMedia.MixProject do
       ],
       test: ["test"],
       "test.watch": ["test --stale --listen-on-stdin"],
-      ci: ["format --check-formatted", "deps.unlock --check-unused", "compile --warnings-as-errors", "test", "credo --strict"]
+      ci: [
+        "format --check-formatted",
+        "deps.unlock --check-unused",
+        "compile --warnings-as-errors",
+        "test",
+        "credo --strict"
+      ]
     ]
   end
 end
