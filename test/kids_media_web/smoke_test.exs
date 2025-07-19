@@ -20,9 +20,9 @@ defmodule KidsMediaWeb.SmokeTest do
         assert conn.status == 200
       else
         # In production, this route shouldn't exist
-        assert_error_sent 404, fn ->
+        assert_error_sent(404, fn ->
           get(conn, "/dev/dashboard")
-        end
+        end)
       end
     end
 
@@ -30,7 +30,8 @@ defmodule KidsMediaWeb.SmokeTest do
       # Test that CSS and JS assets are available
       # Note: In test environment, assets might not be compiled
       conn = get(conn, "/assets/app.css")
-      assert conn.status in [200, 404]  # 404 is acceptable in test env
+      # 404 is acceptable in test env
+      assert conn.status in [200, 404]
     end
   end
 
