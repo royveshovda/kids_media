@@ -56,7 +56,7 @@ defmodule KidsMediaWeb.Endpoint do
     |> Plug.Conn.put_resp_header(
       "content-security-policy",
       "default-src 'self'; img-src 'self' https://images.unsplash.com; " <>
-        "frame-src https://www.youtube-nocookie.com; script-src 'self' 'unsafe-inline'"
+        "frame-src 'self' https://www.youtube-nocookie.com; script-src 'self' 'unsafe-inline'"
     )
   end
 end

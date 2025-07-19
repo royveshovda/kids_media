@@ -28,7 +28,8 @@ end
 ## Development Workflow
 
 **Setup**: Run `mix setup` (installs deps, sets up assets)
-**Start**: `mix phx.server` or `iex -S mix phx.server` for console access
+**Environment**: Copy `.env.example` to `.env` and configure API keys
+**Start**: `source .env && mix phx.server` or `source .env && iex -S mix phx.server` for console access
 **Assets**: Tailwind + esbuild configured, auto-rebuild in dev
 
 ## Configuration Specifics

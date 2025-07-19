@@ -5,5 +5,9 @@
       "text": "Use gitmoji commit message format. Try to describe the functionality of the code in a single line.",
       "type": "info"
     }
-  ]
+  ],
+  "github.copilot.chat.agent.terminal.allowList": {
+    "pkill -f \"mix phx.server\"": true,
+    "source .env && mix phx.server": true
+  }
 }
