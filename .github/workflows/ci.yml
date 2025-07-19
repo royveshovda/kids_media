@@ -15,12 +15,8 @@ jobs:
     name: Test
     strategy:
       matrix:
-        elixir: ['1.16.3', '1.17.3']
-        otp: ['26.2.5', '27.1']
-        exclude:
-          # OTP 27 requires Elixir 1.17+
-          - elixir: '1.16.3'
-            otp: '27.1'
+        elixir: ['1.18.4']
+        otp: ['28.0.2']
 
     steps:
     - name: Set up Git repository
@@ -72,11 +68,9 @@ jobs:
 
     - name: Generate test coverage report
       run: mix coveralls.html
-      if: matrix.elixir == '1.17.3' && matrix.otp == '27.1'
 
     - name: Archive test coverage results
-      uses: actions/upload-artifact@v3
-      if: matrix.elixir == '1.17.3' && matrix.otp == '27.1'
+      uses: actions/upload-artifact@v4
       with:
         name: coverage-report
         path: cover/
@@ -91,8 +85,8 @@ jobs:
     - name: Set up Elixir
       uses: erlef/setup-beam@v1
       with:
-        elixir-version: '1.17.3'
-        otp-version: '27.1'
+        elixir-version: '1.18.4'
+        otp-version: '28.0.2'
 
     - name: Set up Node.js
       uses: actions/setup-node@v4
@@ -126,8 +120,8 @@ jobs:
     - name: Set up Elixir
       uses: erlef/setup-beam@v1
       with:
-        elixir-version: '1.17.3'
-        otp-version: '27.1'
+        elixir-version: '1.18.4'
+        otp-version: '28.0.2'
 
     - name: Restore dependencies cache
       uses: actions/cache@v3
