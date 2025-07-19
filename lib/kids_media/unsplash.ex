@@ -14,6 +14,13 @@ defmodule KidsMedia.Unsplash do
     body
     |> Jason.decode!()
     |> Map.fetch!("results")
-    |> Enum.map(& &1["urls"]["regular"])
+    |> Enum.map(fn photo ->
+      %{
+        url: photo["urls"]["regular"],
+        photographer_name: photo["user"]["name"],
+        photographer_url: photo["user"]["links"]["html"],
+        photo_url: photo["links"]["html"]
+      }
+    end)
   end
 end
