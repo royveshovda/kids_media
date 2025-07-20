@@ -38,4 +38,38 @@ defmodule KidsMedia.UnsplashMock do
       }
     ]
   end
+
+  @doc """
+  Returns empty list for testing no images scenario
+  """
+  def search_empty!(_query) do
+    []
+  end
+
+  @doc """
+  Raises an error for testing error handling
+  """
+  def search_error!(_query) do
+    raise "Network error"
+  end
+
+  @doc """
+  Returns different set of images to simulate refresh
+  """
+  def search_refresh!(_query) do
+    [
+      %{
+        url: "https://images.unsplash.com/photo-1555169062-013468b47731",
+        photographer_name: "Sarah Refresh",
+        photographer_url: "https://unsplash.com/@sarah",
+        photo_url: "https://unsplash.com/photos/refresh-photo-1"
+      },
+      %{
+        url: "https://images.unsplash.com/photo-1559827260-dc66d52bef19",
+        photographer_name: "Tom New",
+        photographer_url: "https://unsplash.com/@tom",
+        photo_url: "https://unsplash.com/photos/refresh-photo-2"
+      }
+    ]
+  end
 end

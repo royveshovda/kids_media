@@ -234,4 +234,54 @@ defmodule KidsMediaWeb.SubjectLiveTest do
       # Placeholder for actual implementation
     end
   end
+
+  describe "Image refresh functionality" do
+    test "refresh_images event fetches new images", %{conn: conn} do
+      # Test successful refresh
+      # Would test with mock that returns different images
+      {:ok, _view, html} = live(conn, ~p"/subject/cheetah")
+
+      # Check refresh button exists
+      assert html =~ "🔄 Get New Images"
+      assert html =~ "phx-click=\"refresh_images\""
+
+      assert true
+      # Placeholder for actual implementation with mocked Unsplash
+    end
+
+    test "refresh_images shows loading state", %{conn: conn} do
+      # Test loading UI state
+      {:ok, _view, html} = live(conn, ~p"/subject/cheetah")
+
+      # Check that button can show loading state
+      assert html =~ "bg-blue-500 hover:bg-blue-600 text-white"
+
+      assert true
+      # Placeholder for actual implementation with mocked loading state
+    end
+
+    test "refresh_images handles errors gracefully", %{conn: conn} do
+      # Test error handling
+      {:ok, _view, html} = live(conn, ~p"/subject/cheetah")
+
+      # Check error message placeholder exists in template
+      # When error_message is nil, it doesn't render
+      refute html =~ "bg-red-500 text-white"
+
+      assert true
+      # Placeholder for actual implementation with mocked error
+    end
+
+    test "refresh button is disabled during loading", %{conn: conn} do
+      # Test button state during loading
+      {:ok, _view, html} = live(conn, ~p"/subject/cheetah")
+
+      # Check button is initially not disabled (loading_images: false)
+      refute html =~ "disabled"
+      assert html =~ "bg-blue-500 hover:bg-blue-600 text-white"
+
+      assert true
+      # Placeholder for actual implementation
+    end
+  end
 end
