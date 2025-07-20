@@ -41,9 +41,10 @@ npm-debug.log
 # Temporary build files
 elixir.zip
 
-
 # Elixir installation artifacts
 bin/
+# But include release overlay bin files
+!rel/overlays/bin/
 lib/elixir/
 lib/eex/
 lib/ex_unit/

@@ -1,0 +1,65 @@
+---
+name: Build and Deploy to GitHub Container Registry
+
+"on":
+  push:
+    branches: ["main"]
+  workflow_dispatch:
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  deploy:
+    permissions:
+      contents: read
+      packages: write
+
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Generate version tag
+        id: version
+        run: |
+          # Generate date-based version: YYYY.MM.DD.MMMMM
+          # (minutes since midnight)
+          DATE=$(date -u +"%Y.%m.%d")
+          HOUR=$(date -u +"%H")
+          MINUTE=$(date -u +"%M")
+          MINUTES_SINCE_MIDNIGHT=$((10#$HOUR * 60 + 10#$MINUTE))
+          VERSION_TAG="${DATE}.${MINUTES_SINCE_MIDNIGHT}"
+          echo "version=${VERSION_TAG}" >> $GITHUB_OUTPUT
+          echo "Generated version tag: ${VERSION_TAG}"
+
+      - name: Log in to Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=raw,value=${{ steps.version.outputs.version }}
+            type=raw,value=latest
+
+      - name: Build and Push Container
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Summary
+        run: |
+          echo "✅ Docker image built and pushed successfully"
+          echo "📦 Image: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}"
+          echo "🏷️ Tags: ${{ steps.version.outputs.version }}, latest"

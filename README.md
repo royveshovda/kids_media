@@ -44,6 +44,28 @@ mix ci
 
 See [TESTING.md](TESTING.md) for detailed testing documentation.
 
+## Docker Deployment
+
+The application supports containerized deployment with Docker and GitHub Container Registry (GHCR):
+
+```bash
+# Build Docker image
+docker build -t kids-media .
+
+# Run with environment variables
+docker run -p 4000:4000 \
+  -e SECRET_KEY_BASE=your_secret_key \
+  -e UNSPLASH_ACCESS_KEY=your_unsplash_key \
+  -e PHX_HOST=localhost \
+  kids-media
+```
+
+The repository includes GitHub Actions workflows for:
+- **PR Validation**: Builds Docker image to verify compilation
+- **Main Branch Deployment**: Builds and publishes to GitHub Container Registry with date-based versioning
+
+See [DOCKER.md](DOCKER.md) for complete deployment documentation.
+
 ## Environment Variables
 
 This application requires the following environment variables:
