@@ -8,6 +8,7 @@
   ],
   "github.copilot.chat.agent.terminal.allowList": {
     "pkill -f \"mix phx.server\"": true,
-    "source .env && mix phx.server": true
+    "source .env && mix phx.server": true,
+    "mix": true,
   }
 }
