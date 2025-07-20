@@ -8,7 +8,7 @@ defmodule KidsMediaWeb.IntegrationTest do
 
       # Verify home page loaded correctly
       assert html =~ "🐆  Cheetahs"
-      assert html =~ "bg-sky-100"
+      assert html =~ "bg-blue-500"
 
       # Click the cheetah button to navigate to subject page
       home_view

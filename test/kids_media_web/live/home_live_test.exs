@@ -6,7 +6,7 @@ defmodule KidsMediaWeb.HomeLiveTest do
       {:ok, _view, html} = live(conn, ~p"/")
 
       assert html =~ "🐆  Cheetahs"
-      assert html =~ "bg-sky-100"
+      assert html =~ "bg-blue-500"
     end
 
     test "uses fullscreen layout", %{conn: conn} do
@@ -33,8 +33,8 @@ defmodule KidsMediaWeb.HomeLiveTest do
 
       # Check button has proper styling classes
       assert html =~ "text-5xl font-bold bg-yellow-400"
-      assert html =~ "px-20 py-12 rounded shadow-lg"
-      assert html =~ "hover:bg-yellow-500 transition-colors"
+      assert html =~ "px-20 py-12 rounded-xl shadow-2xl"
+      assert html =~ "hover:bg-yellow-300 transition-all"
     end
 
     test "page is kid-friendly with large elements", %{conn: conn} do
@@ -47,6 +47,15 @@ defmodule KidsMediaWeb.HomeLiveTest do
       # Emoji for visual appeal
       assert html =~ "px-20 py-12"
       # Large padding for easy clicking
+    end
+
+    test "integrated navigation is present", %{conn: conn} do
+      {:ok, _view, html} = live(conn, ~p"/")
+
+      # Check for integrated navigation elements
+      assert html =~ "logo.svg"
+      assert html =~ "📚 GitHub"
+      assert html =~ "github.com/royveshovda/kids_media"
     end
 
     test "goto event handles different topics", %{conn: conn} do

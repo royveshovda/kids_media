@@ -113,6 +113,16 @@ defmodule KidsMediaWeb.SubjectLive do
       class="w-full h-full min-h-screen overflow-auto bg-black text-white flex flex-col items-center"
     >
       <h1 class="text-4xl font-extrabold mt-4 mb-2 capitalize">{@topic}</h1>
+      
+    <!-- Home Button -->
+      <div class="mb-4">
+        <a
+          href={~p"/"}
+          class="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg transition-all transform hover:scale-105"
+        >
+          🏠 Back to Home
+        </a>
+      </div>
 
       <%= if @error_message do %>
         <div class="mb-4 bg-red-500 text-white px-4 py-2 rounded-lg">
@@ -207,17 +217,19 @@ defmodule KidsMediaWeb.SubjectLive do
           data-carousel-active={to_string(@carousel_active)}
           data-carousel-interval={@carousel_interval * 1000}
         >
-          <!-- Close button -->
-          <button
-            phx-click="close_modal"
-            type="button"
-            class="absolute top-4 right-4 text-white text-3xl hover:text-red-300 bg-red-600 bg-opacity-80 rounded-full w-14 h-14 flex items-center justify-center"
-          >
-            ✕
-          </button>
+          <!-- Close button - hidden during carousel -->
+          <%= unless @carousel_active do %>
+            <button
+              phx-click="close_modal"
+              type="button"
+              class="absolute top-4 right-4 text-white text-3xl hover:text-red-300 bg-red-600 bg-opacity-80 rounded-full w-14 h-14 flex items-center justify-center"
+            >
+              ✕
+            </button>
+          <% end %>
           
-    <!-- Previous button -->
-          <%= if length(@images) > 1 do %>
+    <!-- Previous button - hidden during carousel -->
+          <%= if length(@images) > 1 and not @carousel_active do %>
             <button
               phx-click="prev_image"
               type="button"
@@ -227,8 +239,8 @@ defmodule KidsMediaWeb.SubjectLive do
             </button>
           <% end %>
           
-    <!-- Next button -->
-          <%= if length(@images) > 1 do %>
+    <!-- Next button - hidden during carousel -->
+          <%= if length(@images) > 1 and not @carousel_active do %>
             <button
               phx-click="next_image"
               type="button"
@@ -238,10 +250,14 @@ defmodule KidsMediaWeb.SubjectLive do
             </button>
           <% end %>
           
-    <!-- Current image -->
+    <!-- Current image - larger in carousel mode -->
           <img
             src={Enum.at(@images, @current_image_index).url}
-            class="max-w-[90vw] max-h-[90vh] object-contain pointer-events-none"
+            class={
+              if @carousel_active,
+                do: "max-w-[98vw] max-h-[95vh] object-contain pointer-events-none",
+                else: "max-w-[90vw] max-h-[90vh] object-contain pointer-events-none"
+            }
             alt="Fullscreen image"
           />
           
