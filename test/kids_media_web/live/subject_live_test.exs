@@ -28,6 +28,15 @@ defmodule KidsMediaWeb.SubjectLiveTest do
 
       assert html =~ "wild-cats"
     end
+
+    test "displays home button for navigation", %{conn: conn} do
+      {:ok, _view, html} = live(conn, ~p"/subject/cheetah")
+
+      # Check that home button is present
+      assert html =~ "🏠 Back to Home"
+      assert html =~ "href=\"/\""
+      assert html =~ "bg-blue-500 hover:bg-blue-600"
+    end
   end
 
   describe "Image display" do
