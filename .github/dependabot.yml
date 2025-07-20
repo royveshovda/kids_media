@@ -13,7 +13,12 @@ updates:
         patterns:
           - "*"
         exclude-patterns:
-          - "heroicons"  # Git dependency, handle separately
+          - "heroicons"  # Git dependency, handle separately  
+          - "dialyxir"   # Development tools grouped separately
+          - "sobelow"
+          - "credo" 
+          - "excoveralls"
+          - "styler"
       development-tools:
         patterns:
           - "dialyxir"
