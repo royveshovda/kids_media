@@ -12,7 +12,7 @@ defmodule KidsMediaWeb.HomeLive do
     <div class="w-full h-full min-h-screen bg-blue-500 text-white relative">
       <!-- Integrated Navigation -->
       <nav class="absolute top-4 left-0 right-0 flex justify-between px-8 z-10">
-        <a href="/" class="text-white hover:text-blue-200 text-lg font-semibold transition-colors">
+        <a href={~p"/"} class="text-white hover:text-blue-200 text-lg font-semibold transition-colors">
           <img src={~p"/images/logo.svg"} width="36" />
         </a>
         <a
