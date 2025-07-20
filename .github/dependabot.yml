@@ -1,0 +1,67 @@
+version: 2
+updates:
+  # Elixir dependencies (mix.exs)
+  - package-ecosystem: "mix"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "UTC"
+    groups:
+      elixir-dependencies:
+        patterns:
+          - "*"
+        exclude-patterns:
+          - "heroicons"  # Git dependency, handle separately
+      development-tools:
+        patterns:
+          - "dialyxir"
+          - "sobelow"
+          - "credo"
+          - "excoveralls" 
+          - "styler"
+    open-pull-requests-limit: 5
+    assignees:
+      - "royveshovda"
+    commit-message:
+      prefix: "deps"
+      include: "scope"
+
+  # GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "09:30"
+      timezone: "UTC"
+    groups:
+      github-actions:
+        patterns:
+          - "*"
+    open-pull-requests-limit: 3
+    assignees:
+      - "royveshovda"
+    commit-message:
+      prefix: "ci"
+      include: "scope"
+
+  # Dev Container features
+  - package-ecosystem: "devcontainers"
+    directory: "/.devcontainer"
+    schedule:
+      interval: "weekly" 
+      day: "monday"
+      time: "10:00"
+      timezone: "UTC"
+    groups:
+      devcontainer-features:
+        patterns:
+          - "*"
+    open-pull-requests-limit: 2
+    assignees:
+      - "royveshovda"
+    commit-message:
+      prefix: "devcontainer"
+      include: "scope"
