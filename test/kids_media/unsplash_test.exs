@@ -9,6 +9,8 @@ defmodule KidsMedia.UnsplashTest do
   describe "search!/1" do
     test "function exists and has correct arity" do
       # Test that the function exists with the right signature
+      # Ensure module is loaded first
+      Code.ensure_loaded!(Unsplash)
       assert function_exported?(Unsplash, :search!, 1)
     end
 

@@ -14,7 +14,9 @@ defmodule KidsMediaWeb.SubjectLive do
        show_modal: false,
        current_image_index: 0,
        carousel_active: false,
-       carousel_interval: 3
+       carousel_interval: 3,
+       loading_images: false,
+       error_message: nil
      )}
   end
 
@@ -78,6 +80,30 @@ defmodule KidsMediaWeb.SubjectLive do
     end
   end
 
+  def handle_event("refresh_images", _params, socket) do
+    topic = socket.assigns.topic
+
+    socket =
+      socket
+      |> assign(loading_images: true, error_message: nil)
+
+    try do
+      unsplash_module = Application.get_env(:kids_media, :unsplash_module, KidsMedia.Unsplash)
+      new_images = unsplash_module.search!("#{topic} animal")
+
+      {:noreply,
+       socket
+       |> assign(images: new_images, loading_images: false, current_image_index: 0)
+       |> put_flash(:info, "Images refreshed!")}
+    rescue
+      _error ->
+        {:noreply,
+         socket
+         |> assign(loading_images: false, error_message: "Failed to load new images")
+         |> put_flash(:error, "Unable to refresh images. Please try again.")}
+    end
+  end
+
   @impl true
   def render(assigns) do
     ~H"""
@@ -87,6 +113,12 @@ defmodule KidsMediaWeb.SubjectLive do
       class="w-full h-full min-h-screen overflow-auto bg-black text-white flex flex-col items-center"
     >
       <h1 class="text-4xl font-extrabold mt-4 mb-2 capitalize">{@topic}</h1>
+
+      <%= if @error_message do %>
+        <div class="mb-4 bg-red-500 text-white px-4 py-2 rounded-lg">
+          {@error_message}
+        </div>
+      <% end %>
       
     <!-- Carousel controls -->
       <div class="mb-4 flex flex-col items-center gap-4">
@@ -103,6 +135,25 @@ defmodule KidsMediaWeb.SubjectLive do
           ]}
         >
           🎠 Start Carousel
+        </button>
+
+        <button
+          phx-click="refresh_images"
+          type="button"
+          disabled={@loading_images}
+          class={[
+            "font-bold py-3 px-6 rounded-lg text-lg",
+            if(@loading_images,
+              do: "bg-blue-300 text-gray-600 cursor-not-allowed",
+              else: "bg-blue-500 hover:bg-blue-600 text-white"
+            )
+          ]}
+        >
+          <%= if @loading_images do %>
+            ⏳ Loading...
+          <% else %>
+            🔄 Get New Images
+          <% end %>
         </button>
 
         <form phx-change="update_carousel_interval" class="flex items-center gap-4">
