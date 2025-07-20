@@ -46,7 +46,7 @@ See [TESTING.md](TESTING.md) for detailed testing documentation.
 
 ## Docker Deployment
 
-The application supports containerized deployment with Docker and Google Container Registry (GCR):
+The application supports containerized deployment with Docker and GitHub Container Registry (GHCR):
 
 ```bash
 # Build Docker image
@@ -62,7 +62,7 @@ docker run -p 4000:4000 \
 
 The repository includes GitHub Actions workflows for:
 - **PR Validation**: Builds Docker image to verify compilation
-- **Main Branch Deployment**: Builds and publishes to Google Container Registry
+- **Main Branch Deployment**: Builds and publishes to GitHub Container Registry with date-based versioning
 
 See [DOCKER.md](DOCKER.md) for complete deployment documentation.
 
