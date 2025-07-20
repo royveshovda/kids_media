@@ -90,6 +90,37 @@ Tailwind CSS with kid-friendly aesthetics:
 - Black backgrounds for fullscreen content (`bg-black text-white`)
 - Responsive image grids (`flex flex-wrap justify-center gap-4`)
 
+## PRP (Product Requirements Document) Workflow
+
+The project uses a structured PRP approach for feature implementation to ensure high-quality, well-documented development.
+
+### Creating PRPs
+Use `.github/chatmodes/create-prp.chatmode.md` to generate comprehensive PRPs:
+
+1. **Research Phase**: Analyze codebase patterns, external documentation, and implementation examples
+2. **Context Gathering**: Include all necessary documentation, code examples, and gotchas
+3. **Implementation Blueprint**: Provide pseudocode, task lists, and validation gates
+4. **Quality Validation**: Ensure PRPs include executable validation commands
+
+**PRP Template**: Use `PRPs/templates/prp_base.md` as the foundation for all PRPs
+**Storage**: Save PRPs as `PRPs/{feature-name}.md`
+
+### Executing PRPs
+Use `.github/chatmodes/execute-prp.chatmode.md` to implement features from PRPs:
+
+1. **Load PRP**: Read and understand all context and requirements
+2. **Plan**: Break down complex tasks using comprehensive planning
+3. **Execute**: Implement following the PRP guidance
+4. **Validate**: Run all validation commands and fix failures iteratively
+5. **Complete**: Ensure all checklist items are done
+
+### PRP Best Practices
+- Include all necessary context for one-pass implementation success
+- Reference existing codebase patterns and conventions
+- Provide executable validation gates (mix ci, mix test, etc.)
+- Document error handling strategies and gotchas
+- Score PRPs 1-10 for implementation confidence
+
 ## Notes
 - YouTube integration is planned but not yet implemented (see commented code in subject.ex)
 - Assets are processed via esbuild/tailwind, not Node.js package manager
