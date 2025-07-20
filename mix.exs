@@ -10,6 +10,7 @@ defmodule KidsMedia.MixProject do
       start_permanent: Mix.env() == :prod,
       aliases: aliases(),
       deps: deps(),
+      releases: releases(),
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
         coveralls: :test,
@@ -98,6 +99,18 @@ defmodule KidsMedia.MixProject do
         "compile --warnings-as-errors",
         "test",
         "credo --strict"
+      ]
+    ]
+  end
+
+  # Application releases
+  # See https://hexdocs.pm/mix/Mix.Tasks.Release.html for more information.
+  defp releases do
+    [
+      kids_media: [
+        include_executables_for: [:unix],
+        applications: [runtime_tools: :permanent],
+        overlays: ["rel/overlays"]
       ]
     ]
   end
