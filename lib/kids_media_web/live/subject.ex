@@ -117,7 +117,7 @@ defmodule KidsMediaWeb.SubjectLive do
     <!-- Home Button -->
       <div class="mb-4">
         <a
-          href="/"
+          href={~p"/"}
           class="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg text-lg transition-all transform hover:scale-105"
         >
           🏠 Back to Home
