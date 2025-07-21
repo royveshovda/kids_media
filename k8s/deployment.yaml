@@ -1,0 +1,89 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kids-media
+  labels:
+    app: kids-media
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: kids-media
+  template:
+    metadata:
+      labels:
+        app: kids-media
+    spec:
+      containers:
+      - name: kids-media
+        image: ghcr.io/royveshovda/kids_media:latest
+        ports:
+        - containerPort: 4000
+          protocol: TCP
+        env:
+        - name: PORT
+          value: "4000"
+        - name: SECRET_KEY_BASE
+          valueFrom:
+            secretKeyRef:
+              name: kids-media-secrets
+              key: secret-key-base
+        - name: UNSPLASH_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              name: kids-media-secrets
+              key: unsplash-access-key
+        - name: PHX_HOST
+          value: "kids-media.example.com"
+        - name: MIX_ENV
+          value: "prod"
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 4000
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 4000
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 2
+        startupProbe:
+          httpGet:
+            path: /
+            port: 4000
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 6
+      imagePullSecrets:
+      - name: ghcr-secret
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: kids-media-secrets
+type: Opaque
+stringData:
+  secret-key-base: "CHANGE_ME_64_CHAR_SECRET_KEY_BASE_FOR_PHOENIX_APP_SECURITY"
+  unsplash-access-key: "YOUR_UNSPLASH_ACCESS_KEY_HERE"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: ghcr-secret
+type: kubernetes.io/dockerconfigjson
+data:
+  .dockerconfigjson: BASE64_ENCODED_DOCKER_CONFIG_JSON
