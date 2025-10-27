@@ -72,7 +72,7 @@ jobs:
       run: mix coveralls.html
 
     - name: Archive test coverage results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v5
       with:
         name: coverage-report
         path: cover/
@@ -91,7 +91,7 @@ jobs:
         otp-version: '28.0.2'
 
     - name: Set up Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version: '20'
 
