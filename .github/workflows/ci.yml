@@ -20,7 +20,7 @@ jobs:
 
     steps:
     - name: Set up Git repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: Set up Elixir
       uses: erlef/setup-beam@v1
@@ -29,14 +29,14 @@ jobs:
         otp-version: ${{ matrix.otp }}
 
     - name: Restore dependencies cache
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: deps
         key: ${{ runner.os }}-mix-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles('**/mix.lock') }}
         restore-keys: ${{ runner.os }}-mix-${{ matrix.elixir }}-${{ matrix.otp }}-
 
     - name: Restore compiled code cache
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: _build
         key: ${{ runner.os }}-build-${{ matrix.elixir }}-${{ matrix.otp }}-${{ hashFiles('**/mix.lock') }}
@@ -72,7 +72,7 @@ jobs:
       run: mix coveralls.html
 
     - name: Archive test coverage results
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@v6
       with:
         name: coverage-report
         path: cover/
@@ -82,7 +82,7 @@ jobs:
     name: Assets and Frontend
     steps:
     - name: Set up Git repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: Set up Elixir
       uses: erlef/setup-beam@v1
@@ -91,7 +91,7 @@ jobs:
         otp-version: '28.0.2'
 
     - name: Set up Node.js
-      uses: actions/setup-node@v4
+      uses: actions/setup-node@v6
       with:
         node-version: '20'
 
@@ -117,7 +117,7 @@ jobs:
     name: Code Quality and Security
     steps:
     - name: Set up Git repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
 
     - name: Set up Elixir
       uses: erlef/setup-beam@v1
@@ -126,14 +126,14 @@ jobs:
         otp-version: '28.0.2'
 
     - name: Restore dependencies cache
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: deps
         key: ${{ runner.os }}-mix-quality-${{ hashFiles('**/mix.lock') }}
         restore-keys: ${{ runner.os }}-mix-quality-
 
     - name: Restore PLT cache
-      uses: actions/cache@v4
+      uses: actions/cache@v5
       with:
         path: priv/plts
         key: ${{ runner.os }}-plt-${{ hashFiles('**/mix.lock') }}
